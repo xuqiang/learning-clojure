@@ -62,5 +62,38 @@
 				(assoc summary-map :average
 					(assoc averages-map type amount))))))
 (set-average-in users :kyle :monthly 20000)
+; 另外一种简单的更新方式 (assoc-in map [key & more-keys] values) 
+(assoc-in users [ :kyle :summary :average :monthly ] 3000)
+; 得到元素
+(get-in users [:kyle :summary :average :monthly])
+; 更新元素数值 格式 (update-in map [key & more-keys] update-function & args)
+(update-in users [:kyle :summary :average :monthly] + 500)
+
+; ---------------------- chapter 3 ----------------------
+; 函数定义 
+(defn total-cost [ item-cost number-of-items ]
+	(* item-cost number-of-items))
+; defn 应该算是def和fn两个宏的结合
+(def total-cost2 (fn [item-cost number-of-items] 
+	(* item-cost number-of-items)))
+; 函数添加注释
+(defn total-cost3 
+	"return line-item total of the item and quantity provided"
+	[item-cost number-of-items]
+	(* item-cost number-of-items))
+; doc查看注释
+(doc item-cost3)
+; total-cost添加condition-map 等于是函数的前置判断条件 和 后置半段条件
+; 其中后置判断条件中使用% 标识函数的返回结果
+(defn total-cost4 [price quantity]
+	{:pre [ (> price 0) (> quantity 0) ]
+		:post [ (> % 0) ]}
+		(* price quantity))
+(defn basic-item-total [price quantity]
+	(* price quantity))
+(defn with-line-item-conditions 
+	{:pre [ (> price 0) (> quantity 0) ]
+		:post [ (> % 1) ]}
+		(apple f price quantity))
 
 
