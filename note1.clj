@@ -96,4 +96,74 @@
 		:post [ (> % 1) ]}
 		(apple f price quantity))
 
+; 函数重载
+; 这里定义两个函数 total-cost 一个接受参数item-cost * number-of-items 
+; 另外一个函数只接受一个参数 item-cost
+(defn total-cost 
+	([item-cost number-of-items]
+		(* item-cost number-of-items))
+	([item-cost]
+		(total-cost item-cost 1)))
 
+; 不定参数
+(defn total-all-number [ & numbers ] 
+	(apply + numbers))
+
+; 尾递归
+(defn count-downr [ n ] 
+	(if-not (zero? n)
+		(do
+			(if (= 0 (rem n 100))
+				(println "count-down:" n))
+			(recur (dec n)))))
+; 函数调用
+(+ 1 2 3)
+; apply调用函数 apply相当于高阶函数 函数的函数
+ (apply + [1 2])
+; every函数 
+(def bools [ true false true false ])
+(every? true? bools)
+; some存在某个元素 满足条件
+(some (fn [n] (= n "rob"))  ["kyle" "siva" "rob"])
+; partial函数
+(defn above-threshold [ threshold number ]
+	(> number threshold))
+; 如果使用filter
+(filter (fn [n] (above-threshold 5 n) )  [1 2 3 4 5 6])
+; 或者使用partial 对于下面的例子 相当于partial 给函数固定参数 threshold = 5 [1 2 3 4 5 6 7]
+; 相当于above-threshold的number参数
+( filter (partial above-threshold 5) [1 2 3 4 5 6 7] )
+
+(defn slow-calc [n m]
+	(Thread/sleep 1000)
+	(* n m))
+
+; 匿名函数
+(def total-cost (fn [item-cost number-of-items] 
+	(* item-cost number-of-items)))
+
+; clojure中的keyword keyword可以当作函数 所以也可以这么写 (:username pserson)
+(def person {:username "zak"
+	:balance 12.95
+	:member-since "2009-02-01"})
+(person :username)
+; symbol 符号
+(def expense { 'name "Snow Leopard"
+	'cost 29.25 })
+
+; --------------------------- scope ---------------------------
+; clojure中的变量 类似于其他语言中的全局变量 称之为root bingding 
+(def MAX-CONNECTION 10)
+; 一个变量定义 可以初始化 也可以不初始化 (def MAX-CONNECTION) 如果后续使用了未
+; 初始化的变量 clojure会抛异常 可以使用binding来对变量重新绑定
+; binging的作用域 只是在当前的情景中有效
+(def *eval-me* 10)
+(defn print-the-var [n] 
+	(println n *eval-me*))
+(print-the-var "A:")
+(binding [ *eval-me* 10 ] 
+	(print-the-var "B:")
+	(binding [*eval-me* 20] 
+		(print-the-var "C:"))
+	(print-the-var "D:"))
+(print-the-var "E:")
