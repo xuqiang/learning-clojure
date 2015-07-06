@@ -152,7 +152,7 @@
 	'cost 29.25 })
 
 ; --------------------------- scope ---------------------------
-; clojure中的变量 类似于其他语言中的全局变量 称之为root bingding 
+; clojure中的变量 类似于其他语言中的全局变量 称之为root binding 
 (def MAX-CONNECTION 10)
 ; 一个变量定义 可以初始化 也可以不初始化 (def MAX-CONNECTION) 如果后续使用了未
 ; 初始化的变量 clojure会抛异常 可以使用binding来对变量重新绑定
@@ -167,3 +167,13 @@
 		(print-the-var "C:"))
 	(print-the-var "D:"))
 (print-the-var "E:")
+
+; root binding对所有线程可见，如果在某个现成内 重新binding该变量 对另外的
+; 的线程是不可见的
+
+; let关键字
+; .toUpperCase 认为调用java方法
+(defn upcased-names [names] 
+	(let [ up-case (fn [name] 
+		(.toUpperCase name)) ]
+	(map up-case names)))
